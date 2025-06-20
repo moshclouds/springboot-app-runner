@@ -44,6 +44,7 @@ jobs:
       uses: awslabs/amazon-app-runner-deploy@main
       with:
         service: springboot-apprunner
+        access-role-arn: ${{ secrets.ROLE_ARN }}
         image: ${{ steps.docker.outputs.IMAGE_URI }}
         region: ${{ env.AWS_REGION }}
         port: 8890
