@@ -1,0 +1,26 @@
+# Maven build output
+target/
+
+# Maven wrapper binaries
+.mvn/
+mvnw
+mvnw.cmd
+
+# Git
+.git
+.gitignore
+
+# OS & IDE junk
+*.DS_Store
+*.idea/
+*.vscode/
+*.log
+
+# Docker itself
+Dockerfile
+.dockerignore
+
+# Node / Frontend extras (if accidentally added)
+node_modules/
+dist/
+build/
