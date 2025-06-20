@@ -37,4 +37,19 @@ jobs:
         docker push $IMAGE_URI
 
     - name: Output Image URI
-      run: echo "✅ Image successfully pushed: ${{ steps.docker.outputs.IMAGE_URI }}"
+      run: echo "Image successfully pushed => ${{ steps.docker.outputs.IMAGE_URI }}"
+    
+    - name: Deploy to App Runner Image
+      id: deploy-apprunner
+      uses: awslabs/amazon-app-runner-deploy@main
+      with:
+        service: springboot-apprunner
+        image: ${{ steps.docker.outputs.IMAGE_URI }}
+        region: ${{ env.AWS_REGION }}
+        port: 8890
+        cpu : 1
+        memory : 2
+        wait-for-service-stability-seconds: 1200
+      
+    - name: App Runner URL
+      run: echo "App runner URL ${{ steps.deploy-apprunner.outputs.service-url }}" 
