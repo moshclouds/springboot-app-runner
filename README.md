@@ -1,5 +1,7 @@
 # 🚀 AWS App Runner Demo with Spring Boot and GitHub Actions CI/CD
 
+![Image](https://github.com/user-attachments/assets/530423bb-7188-49b2-bcac-734275c8247d)
+
 Welcome to a complete deployment pipeline for your **Spring Boot app** using:
 - 🐳 Docker
 - ☁️ Amazon ECR
