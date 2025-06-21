@@ -1,7 +1,4 @@
-## 📘 `README.md` (Cleaned Up & Explained)
-
-
-# 🚀 Spring Boot on AWS App Runner with GitHub Actions CI/CD
+# 🚀 AWS App Runner Demo with Spring Boot and GitHub Actions CI/CD
 
 Welcome to a complete deployment pipeline for your **Spring Boot app** using:
 - 🐳 Docker
@@ -41,37 +38,7 @@ graph TD
   G --> H[🌐 App Deployed to Public URL]
 ```
 
-```
-+------------------+          +---------------------+         +--------------------------+
-|                  |          |                     |         |                          |
-|  💻 Developer    +--------->|  🐙 GitHub Repo      +-------->+  🤖 GitHub Actions CI/CD  |
-|  (Spring Boot)   |  Push    |  (Main Branch)       | Trigger |  (Workflow: Build + Push |
-|                  |          |                     |         |   + Deploy)              |
-+------------------+          +---------------------+         +------------+-------------+
-                                                                              |
-                                                                              v
-                                                               +--------------+-------------+
-                                                               |                            |
-                                                               |  🐳 Docker Build & Push     |
-                                                               |  (Build image, push to     |
-                                                               |   Amazon ECR registry)     |
-                                                               +--------------+-------------+
-                                                                              |
-                                                                              v
-                                                             +-------------------------------+
-                                                             |                               |
-                                                             |  🚀 AWS App Runner Deploys     |
-                                                             |  (Pull image from ECR, run    |
-                                                             |   container with access role) |
-                                                             +-------------------------------+
-                                                                              |
-                                                                              v
-                                                           +-------------------------------------+
-                                                           |                                     |
-                                                           |  🌐 Live Application URL (Public)   |
-                                                           |  https://<random>.awsapprunner.com |
-                                                           +-------------------------------------+
-```
+
 
 ---
 
@@ -169,7 +136,11 @@ Create an IAM user (e.g., `springboot-app-runner`) with:
 
 This allows GitHub Actions to **pass a role to App Runner**.
 
-📸 **Add screenshot here showing IAM user creation**
+![Image](https://github.com/user-attachments/assets/576b344a-d65f-42a6-8bb4-5e842f740a69) <br>
+![Image](https://github.com/user-attachments/assets/e521d813-09a4-4279-9c91-33c3a7eaaad2) <br>
+![Image](https://github.com/user-attachments/assets/5692957e-7cfd-4f87-bd1d-1fbae37ceed8) <br>
+![Image](https://github.com/user-attachments/assets/b7c3a04c-ba5a-4470-809a-b2134c3bf59d) <br>
+![Image](https://github.com/user-attachments/assets/ad722fb6-ccb8-4610-bd8b-9121667b0a1f) <br>
 
 ---
 
@@ -181,11 +152,16 @@ Create a new **IAM Role** with:
 
 ```json
 {
-  "Effect": "Allow",
-  "Principal": {
-    "Service": "build.apprunner.amazonaws.com"
-  },
-  "Action": "sts:AssumeRole"
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "build.apprunner.amazonaws.com"
+          },
+          "Action": "sts:AssumeRole"
+        }
+	]
 }
 ```
 
@@ -193,7 +169,11 @@ Create a new **IAM Role** with:
 
 * Attach: `AmazonEC2ContainerRegistryReadOnly`
 
-📸 **Add screenshot here showing role creation**
+![Image](https://github.com/user-attachments/assets/4e942a1c-dedc-4ae1-8975-e515634d6074) <br>
+![Image](https://github.com/user-attachments/assets/5b65b6fa-ab11-42db-98f5-1eceb57b5c02) <br>
+![Image](https://github.com/user-attachments/assets/2b30efce-d2ad-43c3-9e12-4a7a38db69e7) <br>
+![Image](https://github.com/user-attachments/assets/f072653c-136a-42f7-a284-033974c43351) <br>
+![Image](https://github.com/user-attachments/assets/b8c88eb6-224c-4e01-907c-386d9f00571d) <br>
 
 ---
 
@@ -209,50 +189,34 @@ Create a new **IAM Role** with:
 
 ---
 
-### ☕ 2. Set Up Java
+### 🔐 2. Authenticate to AWS
 
 ```yaml
-- uses: actions/setup-java@v3
-  with:
-    java-version: '21'
-    distribution: 'temurin'
-```
-
-➡️ Configures Java 21 environment for building your Spring Boot app.
-
----
-
-### 🧪 3. Build the App
-
-```yaml
-- run: ./mvnw clean package -DskipTests
-```
-
-➡️ Uses Maven Wrapper to build the app JAR and skip tests.
-
----
-
-### 🔐 4. Authenticate to AWS
-
-```yaml
-- uses: aws-actions/configure-aws-credentials@v2
+- uses: aws-actions/configure-aws-credentials@v4
 ```
 
 ➡️ Uses `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to allow access to AWS services.
 
+Below Shows a Step by Step Guide for the Key creation
+
+![Image](https://github.com/user-attachments/assets/86988d36-c371-4b8b-85ff-552abafec1f5) <br>
+![Image](https://github.com/user-attachments/assets/e4365766-6b0e-4ce9-8649-8f2808c98d9b) <br>
+![Image](https://github.com/user-attachments/assets/5ff3599d-948d-47c5-887f-1087b400956d) <br>
+![Image](https://github.com/user-attachments/assets/4d681427-7005-49fd-a8b2-c019c0bd8153) <br>
+
 ---
 
-### 📦 5. Log in to Amazon ECR
+### 📦 3. Log in to Amazon ECR
 
 ```yaml
-- uses: aws-actions/amazon-ecr-login@v1
+- uses: aws-actions/amazon-ecr-login@v2
 ```
 
 ➡️ Logs Docker into your ECR registry so it can push the image.
 
 ---
 
-### 🐳 6. Build and Push Docker Image
+### 🐳 4. Build and Push Docker Image
 
 ```bash
 docker build -t $IMAGE_URI .
@@ -263,13 +227,13 @@ docker push $IMAGE_URI
 
 ---
 
-### 🚀 7. Deploy to App Runner
+### 🚀 5. Deploy to App Runner
 
 ```yaml
 - uses: awslabs/amazon-app-runner-deploy@main
   with:
     service: springboot-apprunner
-    image: 904233094040.dkr.ecr.us-east-1.amazonaws.com/my-springboot-app:latest
+    image: 66656744752.dkr.ecr.us-east-1.amazonaws.com/my-springboot-app:latest
     region: us-east-1
     access-role-arn: ${{ secrets.APP_RUNNER_ACCESS_ROLE_ARN }}
 ```
@@ -291,13 +255,20 @@ In your GitHub repo → `Settings > Secrets and variables > Actions`:
 
 ---
 
-## 📸 Screenshots (Add Yours Here)
+## 📸 Screenshots
 
-* ✅ Spring Initializr setup
-* 🔐 IAM User creation
-* 🧾 IAM Role creation with trust policy
-* 📦 ECR repository screen
-* 🚀 App Runner deployment success
+* ✅ Spring Initializr setup <br>
+![Image](https://github.com/user-attachments/assets/e6461efa-9f87-497e-ab1f-efc6cf573751) <br>
+
+* 📦 ECR repository screen <br>
+![Image](https://github.com/user-attachments/assets/541f0b7d-55dd-4f02-a312-7126cd850c72) <br>
+
+* 🚀 App Runner deployment success <br>
+![Image](https://github.com/user-attachments/assets/6cda2bd7-87be-4997-8188-d0bf1e80ae87) <br>
+![Image](https://github.com/user-attachments/assets/6e82a2d1-d406-460b-b139-6d083838c9d6) <br>
+
+* 📬 Github Action Execution <br>
+![Image](https://github.com/user-attachments/assets/72b0108b-5277-43f6-baa5-27ba3b4edabc) <br>
 
 ---
 
@@ -306,7 +277,7 @@ In your GitHub repo → `Settings > Secrets and variables > Actions`:
 Once deployed, App Runner will give you a public URL like:
 
 ```
-https://springboot-apprunner-xyz123.us-east-1.awsapprunner.com
+https://pnxwcd9w25.ap-southeast-1.awsapprunner.com
 ```
 
 You can test it by visiting:
@@ -327,10 +298,10 @@ Response:
 
 ## 🚧 Future Improvements
 
-* [*] Add custom domain to App Runner
-* [*] Add health checks and alerting
-* [*] Switch to Terraform IaC
-* [*] Add staging environment
+* 🔜 Add custom domain to App Runner
+* 🔜 Add health checks and alerting
+* 🔜 Switch to Terraform IaC
+* 🔜 Add staging environment
 
 ---
 
