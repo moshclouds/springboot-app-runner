@@ -33,11 +33,10 @@ You're welcome! Here's a **simple yet clear flow diagram** that shows the end-to
 graph TD
   A[💻 Developer Writes Code] --> B[🐙 Push to GitHub Repo]
   B --> C[🤖 GitHub Actions Triggered]
-  C --> D[📦 Build Spring Boot JAR]
-  D --> E[🐳 Build Docker Image]
-  E --> F[☁️ Push to Amazon ECR]
-  F --> G[🚀 AWS App Runner Pulls Image]
-  G --> H[🌐 App Deployed to Public URL]
+  C --> D[🐳 Build Docker Image]
+  D --> E[☁️ Push to Amazon ECR]
+  E --> F[🚀 AWS App Runner Pulls Image]
+  F --> G[🌐 App Deployed to Public URL]
 ```
 
 
